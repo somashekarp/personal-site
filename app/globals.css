@@ -217,7 +217,7 @@ a {
 	width: min(100% - clamp(32px, 5vw, 64px), 1200px);
 	height: 60px;
 	margin-inline: auto;
-	padding: 0 8px 0 22px;
+	padding: 0 8px 0 13px;
 	border: 1px solid var(--border);
 	border-radius: 999px;
 	background: rgb(16 23 59 / .6);
@@ -232,12 +232,83 @@ a {
 	background: rgb(16 23 59 / .88);
 }
 
+/* Logo: "SP" monogram with an orbit ring, plus name and role */
 .logo {
+	display: inline-flex;
+	align-items: center;
+	gap: 14px;
 	color: var(--text);
-	font-size: 19px;
+	text-decoration: none;
+}
+
+.logo-mark {
+	position: relative;
+	display: grid;
+	place-items: center;
+	flex: none;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, var(--blue), var(--violet));
+	box-shadow: 0 0 18px rgb(77 124 255 / .45), inset 0 1px 0 rgb(255 255 255 / .25);
+	color: #fff;
+	font-size: 14px;
 	font-weight: 700;
 	letter-spacing: -.02em;
-	text-decoration: none;
+	transition: transform .3s cubic-bezier(.2, .7, .2, 1);
+}
+
+.logo-orbit {
+	position: absolute;
+	inset: -5px;
+	border: 1px solid rgb(238 240 255 / .2);
+	border-radius: 50%;
+	transition: rotate .9s cubic-bezier(.2, .7, .2, 1);
+}
+
+/* The yellow dot riding the ring */
+.logo-orbit::after {
+	content: "";
+	position: absolute;
+	top: -3px;
+	left: 50%;
+	width: 6px;
+	height: 6px;
+	margin-left: -3px;
+	border-radius: 50%;
+	background: var(--yellow);
+	box-shadow: 0 0 8px var(--yellow);
+}
+
+.logo:hover .logo-mark {
+	transform: scale(1.06);
+}
+
+.logo:hover .logo-orbit {
+	rotate: 360deg;
+}
+
+.logo-text {
+	display: flex;
+	flex-direction: column;
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: -.02em;
+	line-height: 1.1;
+}
+
+.logo-text small {
+	margin-top: 2px;
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: 0;
+}
+
+@media (max-width: 340px) {
+	.logo-text small {
+		display: none;
+	}
 }
 
 .nav {

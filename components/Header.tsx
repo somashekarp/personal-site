@@ -4,6 +4,9 @@ import { motion, useScroll, useSpring } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { profile } from '@/lib/data';
 
+// "Somasekhar Praneeth" -> "SP"
+const initials = profile.name.split(' ').map((w) => w[0]).join('');
+
 const links = [
 	{ id: 'about', label: 'About' },
 	{ id: 'projects', label: 'Projects' },
@@ -44,7 +47,16 @@ export default function Header() {
 			<motion.div className="progress" style={{ scaleX: progress }} aria-hidden="true" />
 			<header className={`top${scrolled ? ' scrolled' : ''}`}>
 				<div className="top-inner">
-					<a className="logo" href="#top">{profile.logo}</a>
+					<a className="logo" href="#top" aria-label={`${profile.logo}, back to top`}>
+						<span className="logo-mark" aria-hidden="true">
+							<span className="logo-orbit" />
+							{initials}
+						</span>
+						<span className="logo-text" aria-hidden="true">
+							{profile.logo}
+							<small>Full-stack developer</small>
+						</span>
+					</a>
 					<button className="menu-btn" type="button" aria-expanded={open} aria-controls="nav" onClick={() => setOpen(!open)}>
 						{open ? 'Close' : 'Menu'}
 					</button>
