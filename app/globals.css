@@ -463,6 +463,26 @@ a {
 	font-weight: 400;
 }
 
+/* In the narrow "Currently" tile the pill always gets its own line */
+.now .accent .where {
+	display: block;
+	width: fit-content;
+	margin: 8px 0 0;
+}
+
+/* "United States, remote" shown after the company name, as a small pill */
+.accent .where {
+	display: inline-block;
+	margin-left: 8px;
+	padding: 1px 10px;
+	border: 1px solid rgb(61 220 151 / .35);
+	border-radius: 999px;
+	color: var(--green);
+	font-size: 13px;
+	vertical-align: 2px;
+	white-space: nowrap;
+}
+
 .date {
 	padding: 3px 12px;
 	border: 1px solid var(--border);

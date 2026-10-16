@@ -7,7 +7,7 @@ import './globals.css';
 const geologica = Geologica({ subsets: ['latin'], variable: '--font-geologica' });
 
 const title = 'Somasekhar Praneeth | Full-Stack Developer';
-const description = 'Somasekhar Praneeth is a full-stack developer in Hyderabad, India, building web applications, mobile apps and AI-powered products.';
+const description = 'Somasekhar Praneeth is a full-stack developer from Tadepalligudem, Andhra Pradesh, building web applications, mobile apps and AI-powered products.';
 
 export const metadata: Metadata = {
 	title,

@@ -23,7 +23,7 @@ export default function Experience() {
 								<span className="date">{job.dates}</span>
 							</div>
 							<h3 className="tile-title">{job.role}</h3>
-							<p className="accent">{job.company}</p>
+							<p className="accent">{job.company}{job.location && <span className="where"> {job.location}</span>}</p>
 							<ul className="points">
 								{job.points.map((point) => <li key={point}>{point}</li>)}
 							</ul>

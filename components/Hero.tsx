@@ -48,7 +48,7 @@ export default function Hero() {
 				<Tile className="now" style={{ gridArea: 'now' }} delay={.16}>
 					<p className="tile-label">Currently</p>
 					<h2 className="tile-title">{current.role}</h2>
-					<p className="accent">{current.company}</p>
+					<p className="accent">{current.company}{current.location && <span className="where"> {current.location}</span>}</p>
 					<p className="tile-note">{profile.focus}</p>
 					<p className="tile-foot">{current.dates}</p>
 				</Tile>

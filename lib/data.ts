@@ -11,8 +11,8 @@ export const profile = {
 	// The hero cycles through these after "Full-stack developer building"
 	roleWords: ['AI agents', 'web applications', 'mobile apps'],
 	roleSentence: 'Full-stack developer building web applications, mobile apps and AI-powered products.',
-	intro: 'Based in Hyderabad, India. Currently building AI automation for healthcare at Atelia Softwares.',
-	location: 'Hyderabad, India',
+	intro: 'Based in Tadepalligudem, Andhra Pradesh. Currently working from home for Atelia Softwares, a US company, building AI automation for healthcare.',
+	location: 'Tadepalligudem, Andhra Pradesh',
 	email: 'praneeth4138@gmail.com',
 	phone: '+91 81438 27703',
 	phoneHref: 'tel:+918143827703',
@@ -33,7 +33,7 @@ export const profile = {
 export const about = {
 	lead: "I'm a full-stack developer who builds complete products, from the user interface to the backend services and, more recently, the AI agents that power them.",
 	paragraphs: [
-		'I began my career in 2021 as a backend intern at Oorwin, working on a resume parser, a job portal and a CRM. I went on to build invoicing and real estate products at Grow Global, and today I develop AI automation for healthcare at Atelia Softwares.',
+		'I began my career in 2021 as a backend intern at Oorwin, working on a resume parser, a job portal and a CRM. I went on to build invoicing and real estate products at Grow Global, and today I work remotely for Atelia Softwares, a US company, where I develop AI automation for healthcare.',
 		'I hold a B.Tech in Electrical and Electronics Engineering and bring the same structured, systems-level thinking to software. I value clean design and maintainable code, and I deliver on time and within budget.',
 	],
 };
@@ -142,6 +142,7 @@ export const experience = [
 	{
 		role: 'Full-Stack Developer',
 		company: 'Atelia Softwares',
+		location: 'United States, remote',
 		dates: '2023 – Present',
 		points: [
 			'Built an AI automation solution that streamlines communication between doctors and patients.',
