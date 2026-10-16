@@ -3,9 +3,9 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-// Hero sphere made of particles. The mouse pushes particles away and makes
-// them glow, a click sends a pulse through them, and scrolling down spins
-// the sphere away. It only renders while the hero is on screen.
+// Particle sphere inside its bento tile. The mouse pushes particles away and
+// makes them glow, a click sends a pulse through them, and scrolling turns it.
+// It only renders while the tile is on screen.
 
 const vertexShader = /* glsl */ `
 uniform float uTime;
@@ -52,18 +52,16 @@ const fragmentShader = /* glsl */ `
 uniform vec3 uColA;
 uniform vec3 uColB;
 uniform vec3 uHot;
-uniform float uAlpha;
 varying float vHeat;
 varying float vRand;
 
 void main() {
 	float a = 1. - smoothstep(0., .5, length(gl_PointCoord - .5));
 	vec3 col = mix(mix(uColA, uColB, vRand), uHot, vHeat);
-	gl_FragColor = vec4(col, a * a * uAlpha * (.55 + vHeat));
+	gl_FragColor = vec4(col, a * a * (.55 + vHeat));
 	#include <colorspace_fragment>
 }`;
 
-const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const damp = (a: number, b: number, k: number, dt: number) => a + (b - a) * (1 - Math.pow(1 - k, dt * 60));
 
 export default function HeroSphere() {
@@ -71,24 +69,23 @@ export default function HeroSphere() {
 
 	useEffect(() => {
 		const canvas = ref.current;
-		const hero = canvas?.parentElement;
-		if (!canvas || !hero) return;
-		return startSphere(canvas, hero);
+		const tile = canvas?.parentElement;
+		if (!canvas || !tile) return;
+		return startSphere(canvas, tile);
 	}, []);
 
-	return <canvas ref={ref} id="field" aria-hidden="true" />;
+	return <canvas ref={ref} className="sphere-canvas" aria-hidden="true" />;
 }
 
-function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
+function startSphere(canvas: HTMLCanvasElement, tile: HTMLElement) {
 	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const narrowQuery = matchMedia('(max-width: 760px)');
-	const count = narrowQuery.matches ? 7000 : 14000;
+	const count = matchMedia('(max-width: 760px)').matches ? 6000 : 11000;
 
 	let renderer: THREE.WebGLRenderer;
 	try {
 		renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
 	} catch {
-		canvas.style.display = 'none';   // no WebGL: the hero gradient still carries the page
+		canvas.style.display = 'none';   // no WebGL: the tile keeps its gradient
 		return;
 	}
 	renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -123,7 +120,6 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 		uColA: { value: new THREE.Color('#4d7cff') },
 		uColB: { value: new THREE.Color('#b36bff') },
 		uHot: { value: new THREE.Color('#ffc53d') },
-		uAlpha: { value: 1 },
 	};
 	const material = new THREE.ShaderMaterial({
 		uniforms,
@@ -137,21 +133,13 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 	points.frustumCulled = false;
 	scene.add(points);
 
-	// Desktop: sphere right of the text. Phones: centred in its own strip below the text.
-	function place(scroll: number) {
-		const narrow = narrowQuery.matches;
-		if (narrow) scroll *= .3;   // on phones you scroll down to see it, so don't fade it away
-		points.position.x = narrow ? 0 : 1.8;
-		points.position.y = narrow ? 0 : scroll * .8;
-		points.scale.setScalar((narrow ? 1.1 : 1) * (1 - scroll * .25));
-		uniforms.uAlpha.value = 1 - scroll * .7;
-	}
-
+	// Size the sphere to fill about two thirds of the tile, whatever its shape
 	function resize() {
 		const { width, height } = canvas.getBoundingClientRect();
 		renderer.setSize(width, height, false);
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
+		points.scale.setScalar(Math.min(1, camera.aspect) * 1.05);
 	}
 
 	const cleanup = new AbortController();
@@ -168,7 +156,6 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 	};
 
 	if (reduce) {
-		place(0);
 		renderer.render(scene, camera);
 		addEventListener('resize', () => renderer.render(scene, camera), { signal });
 		return dispose;
@@ -189,21 +176,22 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 	let charge = 0;
 	let lastPos: { x: number; y: number } | null = null;
 
-	hero.addEventListener('pointermove', (e) => {
+	tile.addEventListener('pointermove', (e) => {
 		toWorld(e, target);
-		tilt.tx = (e.clientY / innerHeight - .5) * .5;
-		tilt.ty = (e.clientX / innerWidth - .5) * .7;
+		const r = tile.getBoundingClientRect();
+		tilt.tx = ((e.clientY - r.top) / r.height - .5) * .6;
+		tilt.ty = ((e.clientX - r.left) / r.width - .5) * .8;
 		if (lastPos) charge = Math.min(1, charge + Math.hypot(e.clientX - lastPos.x, e.clientY - lastPos.y) / 140);
 		lastPos = { x: e.clientX, y: e.clientY };
 		present = true;
 	}, { signal });
-	hero.addEventListener('pointerleave', () => {
+	tile.addEventListener('pointerleave', () => {
 		present = false;
 		lastPos = null;
 		tilt.tx = tilt.ty = 0;
 	}, { signal });
-	hero.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') present = false; }, { signal });
-	hero.addEventListener('click', (e) => {
+	tile.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') present = false; }, { signal });
+	tile.addEventListener('click', (e) => {
 		const at = toWorld(e, new THREE.Vector3());
 		uniforms.uPulse.value.set(at.x, at.y, uniforms.uTime.value);
 	}, { signal });
@@ -214,7 +202,6 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 		const dt = Math.min((now - last) / 1000, .1);
 		last = now;
 		time += dt;
-		const scroll = clamp(scrollY / hero.offsetHeight, 0, 1);
 
 		charge = damp(charge, 0, .04, dt);
 		uniforms.uTime.value = time;
@@ -224,19 +211,18 @@ function startSphere(canvas: HTMLCanvasElement, hero: HTMLElement) {
 
 		tilt.x = damp(tilt.x, tilt.tx, .04, dt);
 		tilt.y = damp(tilt.y, tilt.ty, .04, dt);
-		points.rotation.x = tilt.x + scroll * .6;
-		points.rotation.y = tilt.y + Math.sin(time * .12) * .35 + scroll * 1.6;
-		place(scroll);
+		points.rotation.x = tilt.x;
+		points.rotation.y = tilt.y + Math.sin(time * .12) * .35 + scrollY * .0015;
 
 		renderer.render(scene, camera);
 	}
 
-	// Pause when the hero is scrolled out of view
+	// Pause when the tile is scrolled out of view
 	const observer = new IntersectionObserver(([entry]) => {
 		last = performance.now();
 		renderer.setAnimationLoop(entry.isIntersecting ? loop : null);
 	});
-	observer.observe(hero);
+	observer.observe(tile);
 
 	return () => {
 		observer.disconnect();

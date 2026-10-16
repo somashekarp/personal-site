@@ -1,35 +1,28 @@
-import Image from 'next/image';
-import { about, profile } from '@/lib/data';
-import { Reveal } from './ui';
+import { about, education } from '@/lib/data';
+import { SectionHead, Tile } from './ui';
 
 export default function About() {
 	return (
 		<section className="section" id="about">
-			<div className="wrap about">
-				<Reveal>
-					<figure className="portrait" data-tilt>
-						<Image src={profile.photo.src} width={profile.photo.width} height={profile.photo.height} alt={`Portrait of ${profile.name}`} />
-					</figure>
-				</Reveal>
-				<Reveal className="about-copy" delay={.1}>
-					<h2>About me</h2>
-					<p className="lead">{about.lead}</p>
-					{about.paragraphs.map((p) => <p key={p}>{p}</p>)}
-					<dl className="facts">
-						<div>
-							<dt>Phone</dt>
-							<dd><a href={profile.phoneHref}>{profile.phone}</a></dd>
-						</div>
-						<div>
-							<dt>Email</dt>
-							<dd><a href={`mailto:${profile.email}`}>{profile.email}</a></dd>
-						</div>
-						<div>
-							<dt>Location</dt>
-							<dd>{profile.location}</dd>
-						</div>
-					</dl>
-				</Reveal>
+			<div className="wrap">
+				<SectionHead title="About me" text="Who I am, how I got here and what I studied." />
+				<div className="about-grid">
+					<Tile className="about-bio">
+						<p className="lead">{about.lead}</p>
+						{about.paragraphs.map((p) => <p key={p}>{p}</p>)}
+					</Tile>
+					{education.map((e, i) => (
+						<Tile className="edu" key={e.degree} delay={.08 + i * .08}>
+							<div className="tile-top">
+								<p className="tile-label">Education</p>
+								<span className="date">{e.dates}</span>
+							</div>
+							<h3 className="tile-title">{e.degree}</h3>
+							<p className="accent">{e.school}</p>
+							<p className="tile-note">{e.note}</p>
+						</Tile>
+					))}
+				</div>
 			</div>
 		</section>
 	);

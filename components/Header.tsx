@@ -29,7 +29,11 @@ export default function Header() {
 		}, { rootMargin: '-45% 0px -50% 0px' });
 		document.querySelectorAll('main section[id]').forEach((s) => observer.observe(s));
 
+		const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+		addEventListener('keydown', onKey);
+
 		return () => {
+			removeEventListener('keydown', onKey);
 			removeEventListener('scroll', onScroll);
 			observer.disconnect();
 		};
@@ -39,7 +43,7 @@ export default function Header() {
 		<>
 			<motion.div className="progress" style={{ scaleX: progress }} aria-hidden="true" />
 			<header className={`top${scrolled ? ' scrolled' : ''}`}>
-				<div className="wrap top-inner">
+				<div className="top-inner">
 					<a className="logo" href="#top">{profile.logo}</a>
 					<button className="menu-btn" type="button" aria-expanded={open} aria-controls="nav" onClick={() => setOpen(!open)}>
 						{open ? 'Close' : 'Menu'}
@@ -49,11 +53,11 @@ export default function Header() {
 					}}>
 						{links.map((l) => (
 							<a key={l.id} href={`#${l.id}`} className={active === l.id ? 'active' : undefined} aria-current={active === l.id ? 'true' : undefined}>
-								{l.label}
-								{active === l.id && <motion.span className="nav-indicator" layoutId="nav-indicator" />}
+								<span>{l.label}</span>
+								{active === l.id && <motion.span className="nav-indicator" layoutId="nav-indicator" transition={{ type: 'spring', bounce: .2, duration: .5 }} />}
 							</a>
 						))}
-						<a className="btn btn-small" href="#contact">Hire me</a>
+						<a className="btn btn-primary btn-small" href="#contact">Hire me</a>
 					</nav>
 				</div>
 			</header>

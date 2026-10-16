@@ -21,6 +21,13 @@ export const profile = {
 	github: 'https://github.com/somashekar4138',
 	facebook: 'https://www.facebook.com/somashekar.praneeth41',
 	photo: { src: '/images/me.jpg', width: 824, height: 1030 },
+	availability: 'Available for freelance work',
+	focus: 'Building AI automation for healthcare.',
+	timeZone: 'Asia/Kolkata',
+	timeZoneLabel: 'IST',
+	careerStart: 2021,
+	// Shown in the "Tech I use most" tile at the top of the page
+	stack: ['Agentic AI', 'React', 'Next.js', 'Node.js', 'NestJS', 'Python', 'PostgreSQL', 'React Native'],
 };
 
 export const about = {
@@ -41,8 +48,8 @@ export type Project = {
 	categories: Category[];
 	trace: TraceName;
 	hue: [number, number];
-	// Filters in which this card is shown double-width (chosen so every row ends full)
-	featuredIn?: Filter[];
+	// Larger tile under these filters ('big' = 2x2, 'wide' = 2x1), picked so every row ends full
+	size?: Partial<Record<Filter, 'big' | 'wide'>>;
 };
 
 export const projects: Project[] = [
@@ -53,7 +60,7 @@ export const projects: Project[] = [
 		categories: ['AI'],
 		trace: 'rise',
 		hue: [205, 245],
-		featuredIn: ['All'],
+		size: { All: 'big', AI: 'big' },
 	},
 	{
 		name: 'Medicare',
@@ -78,7 +85,7 @@ export const projects: Project[] = [
 		categories: ['Web'],
 		trace: 'market',
 		hue: [45, 20],
-		featuredIn: ['All', 'Web'],
+		size: { All: 'wide', Web: 'wide' },
 	},
 	{
 		name: 'Growinvoice',
@@ -95,6 +102,7 @@ export const projects: Project[] = [
 		categories: ['Web', 'Mobile'],
 		trace: 'zigzag',
 		hue: [275, 315],
+		size: { All: 'wide' },
 	},
 	{
 		name: 'Indoor Roots',

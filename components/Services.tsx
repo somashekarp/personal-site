@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { services, type ServiceIcon } from '@/lib/data';
-import { Reveal, SectionHead } from './ui';
+import { SectionHead, Tile } from './ui';
 
 const icons: Record<ServiceIcon, ReactNode> = {
 	bot: <><rect x="3" y="11" width="18" height="10" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4M8 16h.01M16 16h.01" /></>,
@@ -17,13 +17,15 @@ export default function Services() {
 		<section className="section" id="services">
 			<div className="wrap">
 				<SectionHead title="Services" text="How I can help your business." />
-				<ul className="services">
+				<ul className="services-grid">
 					{services.map((s, i) => (
-						<Reveal as="li" className={`card${s.highlight ? ' ai' : ''}`} key={s.title} delay={(i % 3) * .08}>
-							<svg viewBox="0 0 24 24" aria-hidden="true">{icons[s.icon]}</svg>
-							<h3>{s.title}</h3>
-							<p>{s.description}</p>
-						</Reveal>
+						<Tile as="li" className={s.highlight ? 'service ai' : 'service'} key={s.title} delay={(i % 3) * .06}>
+							<svg className="icon" viewBox="0 0 24 24" aria-hidden="true">{icons[s.icon]}</svg>
+							<div>
+								<h3 className="tile-title">{s.title}</h3>
+								<p className="tile-note">{s.description}</p>
+							</div>
+						</Tile>
 					))}
 				</ul>
 			</div>

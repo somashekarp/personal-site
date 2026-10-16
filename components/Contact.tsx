@@ -1,50 +1,35 @@
-'use client';
-
-import { AnimatePresence, motion } from 'motion/react';
-import { useRef, useState } from 'react';
 import { profile } from '@/lib/data';
-import { Reveal } from './ui';
+import { CopyEmail, Tile } from './ui';
 
-const copyLabels = { idle: 'Copy email', done: 'Email copied', failed: 'Copy failed, use the address below' };
+const links = [
+	{ label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
+	{ label: 'WhatsApp', value: profile.phone, href: profile.whatsapp, external: true },
+	{ label: 'LinkedIn', value: 'p-somasekhar-praneeth', href: profile.linkedin, external: true },
+	{ label: 'GitHub', value: 'somashekar4138', href: profile.github, external: true },
+];
 
 export default function Contact() {
-	const [copy, setCopy] = useState<keyof typeof copyLabels>('idle');
-	const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-	async function copyEmail() {
-		try {
-			await navigator.clipboard.writeText(profile.email);
-			setCopy('done');
-		} catch {
-			setCopy('failed');
-		}
-		clearTimeout(timer.current);
-		timer.current = setTimeout(() => setCopy('idle'), 2500);
-	}
-
 	return (
 		<section className="section" id="contact">
-			<div className="wrap">
-				<Reveal className="contact card" data-spot>
+			<div className="wrap contact-grid">
+				<Tile className="contact-cta">
 					<h2>Have a project in mind?</h2>
 					<p>I&apos;m currently available for freelance projects. Send me a message with a few details about what you need, and I&apos;ll get back to you as soon as possible.</p>
 					<div className="actions">
 						<a className="btn btn-primary" href={`mailto:${profile.email}`} data-magnetic>Send an email</a>
-						<a className="btn btn-ghost" href={profile.whatsapp} target="_blank" rel="noopener" data-magnetic>Message on WhatsApp</a>
 						<a className="btn btn-ghost" href={profile.phoneHref} data-magnetic>Call me</a>
+						<CopyEmail />
 					</div>
-					<p className="contact-line">
-						{profile.email} <span aria-hidden="true">/</span> <span className="nowrap">{profile.phone}</span>
-					</p>
-					<button type="button" className={`copy-btn ${copy}`} onClick={copyEmail}>
-						<AnimatePresence mode="wait" initial={false}>
-							<motion.span key={copy} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: .2 }}>
-								{copyLabels[copy]}
-							</motion.span>
-						</AnimatePresence>
-					</button>
-					<span className="sr" aria-live="polite">{copy === 'idle' ? '' : copyLabels[copy]}</span>
-				</Reveal>
+				</Tile>
+				{links.map((l, i) => (
+					<Tile className="link-tile" key={l.label} delay={.06 + i * .06}>
+						<a href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}>
+							<span className="tile-label">{l.label}</span>
+							<span className="link-value">{l.value}</span>
+							<svg className="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
+						</a>
+					</Tile>
+				))}
 			</div>
 		</section>
 	);

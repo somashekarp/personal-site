@@ -1,42 +1,35 @@
-import { education, experience } from '@/lib/data';
-import { Reveal, SectionHead } from './ui';
+import { experience, profile } from '@/lib/data';
+import { Reveal, Tile } from './ui';
 
 export default function Experience() {
 	return (
 		<section className="section" id="experience">
-			<div className="wrap">
-				<SectionHead title="Experience" text="My professional experience, most recent first." />
+			<div className="wrap exp-layout">
+				{/* Stays in view while the timeline scrolls past on wide screens */}
+				<Reveal className="exp-intro">
+					<h2>Experience</h2>
+					<p>My professional experience, most recent first.</p>
+					<p className="exp-stat">
+						<strong>{new Date().getFullYear() - profile.careerStart}+ years</strong> building web, mobile and AI products
+					</p>
+				</Reveal>
 
 				{/* The line beside these cards fills as you scroll (see Effects) */}
 				<ol className="timeline">
-					{experience.map((job) => (
-						<Reveal as="li" className="card" key={job.company}>
-							<div className="job-head">
-								<h3>{job.role} <span>at {job.company}</span></h3>
+					{experience.map((job, i) => (
+						<Tile as="li" key={job.company} delay={i * .06}>
+							<span className="dot" aria-hidden="true" />
+							<div className="tile-top">
 								<span className="date">{job.dates}</span>
 							</div>
-							<ul>
+							<h3 className="tile-title">{job.role}</h3>
+							<p className="accent">{job.company}</p>
+							<ul className="points">
 								{job.points.map((point) => <li key={point}>{point}</li>)}
 							</ul>
-						</Reveal>
+						</Tile>
 					))}
 				</ol>
-
-				<Reveal as="div">
-					<h3 className="sub">Education</h3>
-				</Reveal>
-				<div className="education">
-					{education.map((e, i) => (
-						<Reveal className="card" key={e.degree} delay={i * .08}>
-							<div className="job-head">
-								<h4>{e.degree}</h4>
-								<span className="date">{e.dates}</span>
-							</div>
-							<p className="school">{e.school}</p>
-							<p>{e.note}</p>
-						</Reveal>
-					))}
-				</div>
 			</div>
 		</section>
 	);
